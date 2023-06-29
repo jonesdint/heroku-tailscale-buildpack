@@ -31,9 +31,9 @@ CACHE_DIR=$2
 ENV_DIR=$3
 BUILDPACK_DIR="$(dirname "$(dirname "$0")")"
 
-PC_BASE_DIR=$CACHE_DIR/proxychains-ng
-PC_SOURCE_DIR=$CACHE_DIR/proxychains-ng/source
-mkdir -p $PC_SOURCE_DIR
+#DGJ PC_BASE_DIR=$CACHE_DIR/proxychains-ng
+#DGJ PC_SOURCE_DIR=$CACHE_DIR/proxychains-ng/source
+#DGJ mkdir -p $PC_SOURCE_DIR
 
 BUILDPACK_VARIABLES="TAILSCALE_BUILD_TS_VERSION TAILSCALE_BUILD_TS_TARGETARCH"
 
@@ -59,12 +59,12 @@ else
   log "Using Tailscale version from TAILSCALE_BUILD_TS_VERSION config var: $TAILSCALE_BUILD_TS_VERSION"
 fi
 
-if [ -z "${TAILSCALE_BUILD_PROXYCHAINS_REPO:-}" ] ; then
-  export TAILSCALE_BUILD_PROXYCHAINS_REPO="https://github.com/rofl0r/proxychains-ng.git"
-  log "No ProxyChains repo specified in TAILSCALE_BUILD_PROXYCHAINS_REPO config var. Defaulting to $TAILSCALE_BUILD_PROXYCHAINS_REPO."
-else
-  log "Using ProxyChains repo from TAILSCALE_BUILD_PROXYCHAINS_REPO config var: $TAILSCALE_BUILD_PROXYCHAINS_REPO"
-fi
+#DGJ if [ -z "${TAILSCALE_BUILD_PROXYCHAINS_REPO:-}" ] ; then
+#DGJ  export TAILSCALE_BUILD_PROXYCHAINS_REPO="https://github.com/rofl0r/proxychains-ng.git"
+#DGJ  log "No ProxyChains repo specified in TAILSCALE_BUILD_PROXYCHAINS_REPO config var. Defaulting to $TAILSCALE_BUILD_PROXYCHAINS_REPO."
+#DGJ else
+#DGJ   log "Using ProxyChains repo from TAILSCALE_BUILD_PROXYCHAINS_REPO config var: $TAILSCALE_BUILD_PROXYCHAINS_REPO"
+#DGJ fi
 
 
 log "Install Tailscale"
@@ -87,37 +87,37 @@ mkdir -p $BUILD_DIR/.profile.d 2>&1 | indent
 rm -f $BUILD_DIR/.profile.d/heroku-tailscale-buildpack.sh 2>&1 | indent
 echo 'export PATH="/app/vendor/tailscale:$PATH"' >> $BUILD_DIR/.profile.d/heroku-tailscale-buildpack.sh 2>&1 | indent
 
-log "Install ProxyChains-ng"
+#DGJ log "Install ProxyChains-ng"
 
-log "Clone ProxyChains repo"
-rm -r $PC_SOURCE_DIR
-git clone $TAILSCALE_BUILD_PROXYCHAINS_REPO $PC_SOURCE_DIR 2>&1 | indent
+#DGJ log "Clone ProxyChains repo"
+#DGJ rm -r $PC_SOURCE_DIR
+#DGJ git clone $TAILSCALE_BUILD_PROXYCHAINS_REPO $PC_SOURCE_DIR 2>&1 | indent
 
-pushd $PC_SOURCE_DIR > /dev/null
-PC_VERSION_TAG=$(git describe --tags| cut -d- -f1)
-CACHED_BUILD_DIR=$PC_BASE_DIR/proxychains-ng-$PC_VERSION_TAG
+#DGJ pushd $PC_SOURCE_DIR > /dev/null
+#DGJ PC_VERSION_TAG=$(git describe --tags| cut -d- -f1)
+#DGJ CACHED_BUILD_DIR=$PC_BASE_DIR/proxychains-ng-$PC_VERSION_TAG
 
-if [[ ! -d $CACHED_BUILD_DIR ]]; then
-  log "Building ProxyChains $PC_VERSION_TAG"
-  make clean 2>&1 | indent
-  git checkout $PC_VERSION_TAG 2>&1 | indent
-  ./configure --prefix=/app/vendor/proxychains-ng 2>&1 | indent
-  make 2>&1 | indent
-  DESTDIR=$CACHED_BUILD_DIR make install 2>&1 | indent
-fi
-popd > /dev/null
+#DGJ if [[ ! -d $CACHED_BUILD_DIR ]]; then
+#DGJ   log "Building ProxyChains $PC_VERSION_TAG"
+#DGJ   make clean 2>&1 | indent
+#DGJ   git checkout $PC_VERSION_TAG 2>&1 | indent
+#DGJ   ./configure --prefix=/app/vendor/proxychains-ng 2>&1 | indent
+#DGJ   make 2>&1 | indent
+#DGJ   DESTDIR=$CACHED_BUILD_DIR make install 2>&1 | indent
+#DGJ fi
+#DGJ popd > /dev/null
 
-log "Installing ProxyChains into the slug"
-mkdir -p "$BUILD_DIR/vendor/proxychains-ng"
-cp -r "$BUILDPACK_DIR/conf" "$BUILD_DIR/vendor/proxychains-ng/conf"
-echo 'export PATH="/app/vendor/proxychains-ng/bin:$PATH"' >> $BUILD_DIR/.profile.d/heroku-tailscale-buildpack.sh 2>&1 | indent
-echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/app/vendor/proxychains-ng/lib";' >> $BUILD_DIR/.profile.d/heroku-tailscale-buildpack.sh 2>&1 | indent
+#DGJ log "Installing ProxyChains into the slug"
+#DGJ mkdir -p "$BUILD_DIR/vendor/proxychains-ng"
+#DGJ cp -r "$BUILDPACK_DIR/conf" "$BUILD_DIR/vendor/proxychains-ng/conf"
+#DGJ echo 'export PATH="/app/vendor/proxychains-ng/bin:$PATH"' >> $BUILD_DIR/.profile.d/heroku-tailscale-buildpack.sh 2>&1 | indent
+#DGJ echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/app/vendor/proxychains-ng/lib";' >> $BUILD_DIR/.profile.d/heroku-tailscale-buildpack.sh 2>&1 | indent
 
 if [[ "${TAILSCALE_BUILD_EXCLUDE_START_SCRIPT_FROM_PROFILE_D:-}" != "True" ]]; then
   # Add the line to start tailscale to the end of the file
   echo "/app/vendor/tailscale/heroku-tailscale-start.sh" >> $BUILD_DIR/.profile.d/heroku-tailscale-buildpack.sh 2>&1 | indent
 fi
 
-pushd $CACHED_BUILD_DIR/app > /dev/null
-cp -rv ./ $BUILD_DIR 2>&1 | indent
-popd > /dev/null
+#DGJ pushd $CACHED_BUILD_DIR/app > /dev/null
+#DGJ cp -rv ./ $BUILD_DIR 2>&1 | indent
+#DGJ popd > /dev/null
