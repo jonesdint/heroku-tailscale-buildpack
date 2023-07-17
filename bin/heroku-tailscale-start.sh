@@ -39,7 +39,8 @@ else
     --accept-dns=${TAILSCALE_ACCEPT_DNS:-true} \
     --accept-routes=${TAILSCALE_ACCEPT_ROUTES:-true} \
     --advertise-exit-node=${TAILSCALE_ADVERTISE_EXIT_NODE:-false} \
-    --shields-up=${TAILSCALE_SHIELDS_UP:-false}
+    --shields-up=${TAILSCALE_SHIELDS_UP:-false} \
+    --advertise-tags=${TAILSCALE_ADVERTISE_TAGS}
   do
     log "Waiting for 5s for Tailscale to start"
     sleep 5
